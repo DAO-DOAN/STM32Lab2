@@ -22,7 +22,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "clock.h"
+#include "software_timer.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -94,8 +95,42 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  HAL_GPIO_WritePin(DOT_GPIO_Port, DOT_Pin, SET);
+  setTimer1(25);
+  setTimer2(100);
+  updateClockBuffer();
+  int counterdot=0;
   while (1)
   {
+	  if (timer1_flag==1){
+		  setTimer1(25);
+		  if (index_led>=4){
+		  index_led=0;
+		  }
+		  update7SEG(index_led++);
+		  if (counterdot>=4){
+			  counterdot=0;
+			  HAL_GPIO_TogglePin(DOT_GPIO_Port, DOT_Pin);
+		  }
+		  counterdot++;
+
+	  }
+	  if (timer2_flag==1){
+		  setTimer2(100);
+		  second++;
+		  if (second>=60){
+			  second=0;
+			  minute++;
+		  }
+		  if(minute>=60){
+			  minute=0;
+			  hour++;
+		  }
+		  if (hour>=24){
+			  hour=0;
+		  }
+		  updateClockBuffer();
+	  }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
